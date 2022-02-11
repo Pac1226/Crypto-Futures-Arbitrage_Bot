@@ -1,0 +1,3 @@
+exchange,underlying,symbol,expiration,annualizedReturn
+FTX,BTC,BTC-0325,3/25/2022,0.056
+FTX,BTC,BTC-0624,6/24/2022,0.053

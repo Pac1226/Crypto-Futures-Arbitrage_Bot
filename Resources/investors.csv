@@ -1,0 +1,6 @@
+investorID,companyName,totalInvestmentAmount,loanPerUser,minCreditScore,intRate
+I10001,Investor 1,10000000,100000,700,0.03
+I10002,Investor 2,1000000,50000,650,0.04
+I10003,Investor 3,500000,10000,700,0.028
+I10004,Investor 4,1000000,25000,500,0.06
+I10005,Investor 5,100000,10000,800,0.025
