@@ -1,0 +1,2 @@
+approvalID,userID,investorID,loanAmt,intRate,utilizedFlag
+A10001-U10001,U10001,I10001,1000000.0,0.03,Y

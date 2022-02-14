@@ -11,4 +11,4 @@ usersLoanBook_df = get_usersLoanBook()
  
 userID = 'U10001'
 loanRequest = 200000
-investor_selected = userLoanApproval(userID,loanRequest,investor_df,user_df,usersLoanBook_df)
+investor_selected = userLoanApproval(userID,loanRequest)

@@ -1,34 +1,52 @@
 import pandas as pd
 from path import Path
-from usersLoanBook import send_usersLoanBook
+from users import get_users
+from investors import get_investors
+from usersLoanBook import (get_usersLoanBook,send_usersLoanBook)
+import mysql.connector as db_conn
+import pymysql
  
-def userLoanApproval(userID,loanRequest,investor_df,user_df,usersLoanBook_df):
+def userLoanApproval(userID,loanRequest):
+    connection = pymysql.connect(host='198.71.55.59',user='team1',password='teamOneRocks-1',db='columbia-p1', port=3306)
+    cursor = connection.cursor()
+
+    user_df = get_users()
+    investor_df = get_investors()
+    usersLoanBook_df = get_usersLoanBook()
+
     # Get the user details based on the user ID
     user_info = user_df.loc[userID]
-   
+
     # Filter investors based on credit quality
     investor_df['investorID'] = investor_df.index
     investor_df = investor_df[investor_df['minCreditScore'] <= user_info['creditScore']]
- 
+
     # Calculate investor capacity
     investor_outstanding_loans_df = usersLoanBook_df[usersLoanBook_df['utilizedFlag'] == 'Y'][['investorID','loanAmt']].groupby('investorID').sum()
-    investor_df = pd.concat([investor_df,investor_outstanding_loans_df],axis='columns',sort=False).fillna(0)
+    investor_df = pd.concat([investor_df,investor_outstanding_loans_df],axis='columns').fillna(0)
     investor_df['loanCapacity'] = investor_df['totalInvestmentAmount'] - investor_df['loanAmt']
-   
-    # Filter investors based on capacity limitation
-    investor_df = investor_df[investor_df['loanCapacity'] >= loanRequest].sort_values('intRate')
- 
-    print("After adding investor id")
-    print(investor_df)
- 
- 
+
+    # Filter investors based on unutilized investor capacity and loan per user 
+    investor_df = investor_df[(investor_df['loanCapacity'] >= loanRequest) & (investor_df['loanPerUser'] > loanRequest)].sort_values('intRate')
+
     if len(investor_df) == 0:
         print(f"Thanks for your application. Unfortunately there are no investors ready to fund your investment. Please try again later.")
     else:
         investor_df = investor_df.iloc[0]
-        usersLoanBook_df.loc[len(usersLoanBook_df.index)] = [userID,investor_df['investorID'], loanRequest,investor_df['intRate'],"N"]
-        send_usersLoanBook(usersLoanBook_df)
-        companyName = investor_df['companyName']
+        # usersLoanBook_df.loc[len(usersLoanBook_df.index)] = [userID,investor_df['investorID'], loanRequest,investor_df['intRate'],"N"]
+        # send_usersLoanBook(usersLoanBook_df)
+        investorID = investor_df['investorID']
+        approvalID = userID + '-' + investorID
         intRate = investor_df['intRate']
-        print(f"Congratulations, we have matched you with an investor. {companyName} will loan you $ {loanRequest} at {intRate}" )  
+        utilizedFlag = 'N'
+        insert_sql = f"""
+        INSERT INTO usersLoanBook_view (approvalID,userID,investorID,loanAmt,intRate,utilizedFlag)
+        VALUES ('{approvalID}','{userID}','{investorID}','{loanRequest}','{intRate}','{utilizedFlag}')
+        """
+        print(insert_sql)
+        cursor.execute(insert_sql)
+        connection.commit()
+
+        companyName = investor_df['companyName']
+        print(f"Congratulations, we have matched you with an investor. {companyName} will loan you $ {loanRequest} at {intRate * 100} %" )  
     return investor_df
