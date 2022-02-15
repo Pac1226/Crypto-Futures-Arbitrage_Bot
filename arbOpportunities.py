@@ -37,7 +37,7 @@ def arbOpportunities():
             cryptoSpotPrice_df = cryptoSpotPrices_df[cryptoSpotPrices_df['underlying'] == user_arbOppurtunity['underlying']]
             cryptoSpotPrice = cryptoSpotPrice_df.loc[0,'spotPrice']
 
-            lots=round(user['loanAmt'] / cryptoSpotPrice)
+            lots= (user['loanAmt'] / cryptoSpotPrice)
 
             # Create one buy transaction of Spot trade and one sell transaction of the future in the same underlying
 
@@ -63,6 +63,14 @@ def arbOpportunities():
             VALUES ('{today}','{userID}','{exchange}','{symbol}','{buySellFlag}',{lots})
             """
             cursor.execute(insert_sql)
+
+            update_sql = f"""
+            UPDATE usersLoanBook
+            SET utilizedFlag = 'Y'
+            WHERE approvalID = '{user['approvalID']}'
+            """
+
+            cursor.execute(update_sql)
 
             connection.commit()
 

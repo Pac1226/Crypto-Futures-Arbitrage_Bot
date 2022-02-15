@@ -43,7 +43,7 @@ def userLoanApproval(userID,loanRequest):
         INSERT INTO usersLoanBook_view (approvalID,userID,investorID,loanAmt,intRate,utilizedFlag)
         VALUES ('{approvalID}','{userID}','{investorID}','{loanRequest}','{intRate}','{utilizedFlag}')
         """
-        print(insert_sql)
+
         cursor.execute(insert_sql)
         connection.commit()
 
