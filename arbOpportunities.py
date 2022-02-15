@@ -48,19 +48,21 @@ def arbOpportunities():
             exchange = user_arbOppurtunity['exchange']
             symbol = user_arbOppurtunity['underlying']
             buySellFlag = 'BUY'
+            price = cryptoSpotPrice
 
             insert_sql = f"""
-            INSERT INTO transactionLog (txDate,userID,exchange,symbol,buySellFlag,lots)
-            VALUES ('{today}','{userID}','{exchange}','{symbol}','{buySellFlag}',{lots})
+            INSERT INTO transactionLog (txDate,userID,exchange,symbol,buySellFlag,lots,price)
+            VALUES ('{today}','{userID}','{exchange}','{symbol}','{buySellFlag}',{lots},{price})
             """
             cursor.execute(insert_sql)
 
             symbol = user_arbOppurtunity['symbol']
             buySellFlag = 'SELL'
+            price = price * (1 + user_arbOppurtunity['annualizedReturn'])
 
             insert_sql = f"""
-            INSERT INTO transactionLog (txDate,userID,exchange,symbol,buySellFlag,lots)
-            VALUES ('{today}','{userID}','{exchange}','{symbol}','{buySellFlag}',{lots})
+            INSERT INTO transactionLog (txDate,userID,exchange,symbol,buySellFlag,lots,price)
+            VALUES ('{today}','{userID}','{exchange}','{symbol}','{buySellFlag}',{lots},{price})
             """
             cursor.execute(insert_sql)
 
