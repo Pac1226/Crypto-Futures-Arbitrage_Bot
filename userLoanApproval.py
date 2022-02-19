@@ -6,6 +6,16 @@ from usersLoanBook import (get_usersLoanBook,send_usersLoanBook)
 import mysql.connector as db_conn
 import pymysql
  
+# UserLoanApproval funtion requires two parameters.
+# User ID and loan request. Based on these two parameters, the function identifies a list of investors who are ready to fund the loan request, based on user's credentials.
+# If there are more than one investors, then the investor with the least interest rate is selected.
+# The list of investors is short listed based on following logic
+#       1) Minimum credit score threshold
+#       2) Investor's unused loan capacity
+#       3) Max loan per user offered by the investor
+# Once a investor is identified, this is recorded in the userLoanApproval table in SQL Server
+
+
 def userLoanApproval(userID,loanRequest):
     connection = pymysql.connect(host='198.71.55.59',user='team1',password='teamOneRocks-1',db='columbia-p1', port=3306)
     cursor = connection.cursor()

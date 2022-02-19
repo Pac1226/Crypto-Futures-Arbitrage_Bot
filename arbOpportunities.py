@@ -4,10 +4,24 @@ from path import Path
 from usersLoanBook import get_usersLoanBook
 from marketData import (get_cryptoFuturesPrices,get_cryptoSpotPrices)
 import pymysql
- 
+
+#  
+# This function scans the usersLoanBook table and identifies arb opportunities for un-invested money
+# This function can be called by function calls or on a scheduled intervals by the front end job
+# This function scans the FTX exchange, retrieves data for BTC and ETH.
+# It retrieves SPOT price and two FUTURE prices (March futures and June futures)
+# It then identifies the best arb trade. 
+# The function then compares the best arb trade with the loan interest of un-invested opportunity and it's respective interest rate.
+# If the arb profit is greater than the loan interest, then it logs two trade transactions. (BUY SPOT and SELL FUTURE in the same quantity) 
+# 
+
+
 def arbOpportunities():
     usersLoanBook_df = get_usersLoanBook()
+
     usersUnAvailableCapacity_df = usersLoanBook_df[usersLoanBook_df['utilizedFlag'] == 'Y']
+    
+    # identify uninvested money
     usersAvailableCapacity_df = usersLoanBook_df[usersLoanBook_df['utilizedFlag'] == 'N']
     cryptoSpotPrices_df = get_cryptoSpotPrices()
     cryptoFuturesPrices_df = get_cryptoFuturesPrices()

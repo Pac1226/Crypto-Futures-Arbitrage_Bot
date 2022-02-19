@@ -3,6 +3,11 @@ from path import Path
 import sqlalchemy as sql
 import mysql.connector as db_conn
 
+#
+# Get the users data from the sql server table
+# This function was originally written to read the data from a csv file. However, it has been enhanced to retrieving data from database.
+# The old code is still maintained and commented for future use
+# 
  
 def get_users(users_file_path = './Resources/users.csv'):
 

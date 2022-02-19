@@ -10,8 +10,23 @@ import time
 import hmac
 import requests
 from api_data.ftx_functions import (get_price,get_historical_data)
- 
+
+#
+# Get the market data from the FTX exchange using the API calls 
+# This function was originally written to read the data from a csv file. However, it has been enhanced to retrieving data from database.
+# The old code is still maintained and commented for future use
+# 
+# This function scans the FTX exchange, retrieves data for BTC and ETH.
+# It retrieves SPOT price and two FUTURE prices (March futures and June futures)
+# It then identifies the best arb trade. 
+# The function then compares the best arb trade with the loan interest of un-invested opportunity and it's respective interest rate.
+# If the arb profit is greater than the loan interest, then it logs two trade transactions. (BUY SPOT and SELL FUTURE in the same quantity) 
+
+
 def get_cryptoSpotPrices(cryptoSpotPrices_file_path = './Resources/cryptoSpotPrices.csv'):
+
+    # This function retrieves SPOT prices of BTC and ETH
+
     # engine = sql.create_engine('sqlite:///')
     # cryptoSpotPrices_df = pd.read_csv(cryptoSpotPrices_file_path)
     # cryptoSpotPrices_df['spotPrice'] = cryptoSpotPrices_df['spotPrice'].astype(float)
@@ -37,6 +52,10 @@ def get_cryptoSpotPrices(cryptoSpotPrices_file_path = './Resources/cryptoSpotPri
     return spot_prices
  
 def get_cryptoFuturesPrices(cryptoFuturesPrices_file_path = './Resources/cryptoFuturesPrices.csv'):
+
+    # This function retrieves FUTURE prices of BTC and ETH
+
+    
     # engine = sql.create_engine('sqlite:///')
     # cryptoFuturesPrices_df = pd.read_csv(cryptoFuturesPrices_file_path)
     # cryptoFuturesPrices_df['annualizedReturn'] = cryptoFuturesPrices_df['annualizedReturn'].astype(float)
